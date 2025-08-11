@@ -1,61 +1,193 @@
-import { cn } from "../lib/utils"
-import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
-import { Label } from "../components/ui/label"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { apiService } from "@/services/api"
+import { useState } from "react"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [formData, setFormData] = useState({
+    firstname: '',
+    lastname: '',
+    email: '',
+    contact: '',
+    city: '',
+    country: '',
+    additional_info: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      await apiService.createUser(formData);
+      setMessage({ type: 'success', text: 'Account created successfully! Welcome to GlobeTrotter!' });
+      
+      // Reset form
+      setFormData({
+        firstname: '',
+        lastname: '',
+        email: '',
+        contact: '',
+        city: '',
+        country: '',
+        additional_info: ''
+      });
+    } catch (error) {
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : 'Registration failed. Please try again.' 
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Create your account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Enter your details below to create your account
-        </p>
-      </div>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="name">Full Name</Label>
-          <Input id="name" type="text" placeholder="John Doe" required />
+    <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="bg-card rounded-lg border p-8 shadow-lg">
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center">
+            <span className="text-muted-foreground text-sm">Photo</span>
+          </div>
+          <h1 className="text-2xl font-bold">Registration Screen (Screen 2)</h1>
         </div>
-        <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </div>
-        <div className="grid gap-3">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" placeholder="Create a strong password" required />
-        </div>
-        <div className="grid gap-3">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <Input id="confirmPassword" type="password" placeholder="Confirm your password" required />
-        </div>
-        <Button type="submit" className="w-full bg-blue-600">
-          Create Account
-        </Button>
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background text-muted-foreground relative z-10 px-2">
-            Or continue with
-          </span>
-        </div>
-        <Button variant="outline" className="w-full">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 mr-2">
-            <path
-              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-              fill="currentColor"
+        
+        {message && (
+          <div className={`mb-4 p-3 rounded-md ${
+            message.type === 'success' 
+              ? 'bg-green-50 text-green-700 border border-green-200' 
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}>
+            {message.text}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className={cn("space-y-6", className)} {...props}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="firstname">First Name</Label>
+              <Input 
+                id="firstname"
+                name="firstname"
+                type="text" 
+                placeholder="First Name" 
+                value={formData.firstname}
+                onChange={handleInputChange}
+                required 
+                className="bg-background border-2"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastname">Last Name</Label>
+              <Input 
+                id="lastname"
+                name="lastname"
+                type="text" 
+                placeholder="Last Name" 
+                value={formData.lastname}
+                onChange={handleInputChange}
+                required 
+                className="bg-background border-2"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input 
+                id="email"
+                name="email"
+                type="email" 
+                placeholder="Email Address" 
+                value={formData.email}
+                onChange={handleInputChange}
+                required 
+                className="bg-background border-2"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contact">Phone Number</Label>
+              <Input 
+                id="contact"
+                name="contact"
+                type="tel" 
+                placeholder="Phone Number" 
+                value={formData.contact}
+                onChange={handleInputChange}
+                required 
+                className="bg-background border-2"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <Input 
+                id="city"
+                name="city"
+                type="text" 
+                placeholder="City" 
+                value={formData.city}
+                onChange={handleInputChange}
+                className="bg-background border-2"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input 
+                id="country"
+                name="country"
+                type="text" 
+                placeholder="Country" 
+                value={formData.country}
+                onChange={handleInputChange}
+                className="bg-background border-2"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="additional_info">Additional Information</Label>
+            <Textarea 
+              id="additional_info"
+              name="additional_info"
+              placeholder="Additional Information" 
+              value={formData.additional_info}
+              onChange={handleInputChange}
+              className="min-h-[120px] bg-background border-2 resize-none"
             />
-          </svg>
-          Sign up with GitHub
-        </Button>
+          </div>
+
+          <div className="flex justify-center pt-4">
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md font-medium disabled:opacity-50"
+            >
+              {isLoading ? 'Registering...' : 'Register Users'}
+            </Button>
+          </div>
+        </form>
       </div>
-      <div className="text-center text-sm">
-        Already have an account?{" "}
-        <a href="/login" className="underline underline-offset-4">
-          Sign in
-        </a>
-      </div>
-    </form>
+    </div>
   )
 }

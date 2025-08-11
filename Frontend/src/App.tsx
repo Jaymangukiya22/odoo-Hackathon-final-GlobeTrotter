@@ -1,38 +1,30 @@
-import { useState } from 'react'
-import { LoginForm } from './components/login-form'
-import { SignupForm } from './components/signup-form'
-import { Button } from './components/ui/button'
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
-  const [showSignup, setShowSignup] = useState(false)
+import Index from "./pages/Index";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import NotFound from "./pages/NotFound";
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="w-full max-w-md">
-        <div className="mb-4 flex justify-center">
-          <div className="flex bg-muted rounded-lg p-1">
-            <Button
-              variant={!showSignup ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setShowSignup(false)}
-              className="rounded-md"
-            >
-              Login
-            </Button>
-            <Button
-              variant={showSignup ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setShowSignup(true)}
-              className="rounded-md"
-            >
-              Sign Up
-            </Button>
-          </div>
-        </div>
-        {showSignup ? <SignupForm /> : <LoginForm />}
-      </div>
-    </div>
-  )
-}
+const queryClient = new QueryClient();
 
-export default App
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
