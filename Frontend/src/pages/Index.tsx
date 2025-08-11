@@ -1,14 +1,17 @@
 import Seo from "../components/Seo";
 import WelcomeHero from "../components/dashboard/WelcomeHero";
+import SearchBar from "../components/dashboard/SearchBar";
 import TripCard from "../components/dashboard/TripCard";
 import BudgetHighlights from "../components/dashboard/BudgetHighlights";
 import paris from "../assets/city-paris.jpg";
 import tokyo from "../assets/city-tokyo.jpg";
 import nyc from "../assets/city-nyc.jpg";
 import bali from "../assets/city-bali.jpg";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -19,9 +22,7 @@ const Index = () => {
   };
 
   const handlePlan = () => {
-    toast("Trip planner", {
-      description: "Planner coming next — we’ll guide you through destinations, dates, and budget.",
-    });
+    navigate("/create-trip");
   };
 
   const recentTrips = [
@@ -48,8 +49,9 @@ const Index = () => {
 
       {/* Page content */}
 
-      <main className="container py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <WelcomeHero onPlan={handlePlan} />
+        <SearchBar />
 
         <section aria-labelledby="recent" className="mt-6">
           <h2 id="recent" className="text-2xl font-bold tracking-tight mb-4">Your recent trips</h2>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import hero from "@/assets/hero-travel.jpg";
 import { useCallback } from "react";
+import ProfileIcon from "./ProfileIcon";
 
 const WelcomeHero = ({ onPlan }: { onPlan?: () => void }) => {
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -14,13 +15,18 @@ const WelcomeHero = ({ onPlan }: { onPlan?: () => void }) => {
 
   return (
     <section aria-labelledby="welcome" className="mb-10">
-      <header className="mb-4">
-        <h1 id="welcome" className="text-3xl md:text-4xl font-extrabold tracking-tight">
-          GlobeTrotter Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Plan, track, and get inspired for your next adventure.
-        </p>
+      <header className="mb-4 flex justify-between items-start">
+        <div>
+          <h1 id="welcome" className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            GlobeTrotter Dashboard
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Plan, track, and get inspired for your next adventure.
+          </p>
+        </div>
+        <div className="mt-2">
+          <ProfileIcon />
+        </div>
       </header>
 
       <Card className="overflow-hidden border-none shadow-elevated spotlight" onMouseMove={handleMouseMove}>
@@ -39,7 +45,7 @@ const WelcomeHero = ({ onPlan }: { onPlan?: () => void }) => {
                 <p className="text-xl font-semibold">Let’s build your perfect trip</p>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="hero" size="lg" onClick={onPlan}>Plan New Trip</Button>
+                <Button variant="default" size="lg" className="px-8 py-4 text-lg font-semibold rounded-full shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl" onClick={onPlan}>Plan New Trip</Button>
                 <Button variant="secondary" size="lg" asChild>
                   <a href="#recommended" aria-label="Explore recommended destinations">Explore Destinations</a>
                 </Button>

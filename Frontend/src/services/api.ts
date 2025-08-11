@@ -16,11 +16,27 @@ export interface LoginData {
   password: string;
 }
 
+export interface Trip {
+  trip_id?: string;
+  trip_name: string;
+  user_id: string;
+  travel_dates: string;
+  description?: string;
+  city: string;
+  country: string;
+  budget?: number;
+  travelers?: number;
+  trip_type?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
     const config: RequestInit = {
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -68,6 +84,35 @@ class ApiService {
 
   async deleteUser(id: string): Promise<{ message: string }> {
     return this.request<{ message: string }>(`/users/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Trip CRUD operations
+  async createTrip(tripData: Omit<Trip, 'trip_id'>): Promise<Trip> {
+    return this.request<Trip>('/trips', {
+      method: 'POST',
+      body: JSON.stringify(tripData),
+    });
+  }
+
+  async getTripsByUserId(userId: string): Promise<Trip[]> {
+    return this.request<Trip[]>(`/trips/user/${userId}`);
+  }
+
+  async getTripById(tripId: string): Promise<Trip> {
+    return this.request<Trip>(`/trips/${tripId}`);
+  }
+
+  async updateTrip(tripId: string, tripData: Partial<Trip>): Promise<{ message: string }> {
+    return this.request<{ message: string }>(`/trips/${tripId}`, {
+      method: 'PUT',
+      body: JSON.stringify(tripData),
+    });
+  }
+
+  async deleteTrip(tripId: string): Promise<{ message: string }> {
+    return this.request<{ message: string }>(`/trips/${tripId}`, {
       method: 'DELETE',
     });
   }
