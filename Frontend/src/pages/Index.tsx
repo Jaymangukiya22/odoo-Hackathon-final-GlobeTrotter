@@ -25,6 +25,10 @@ const Index = () => {
     navigate("/create-trip");
   };
 
+  const handleViewTrips = () => {
+    navigate("/trips");
+  };
+
   const recentTrips = [
     { title: "Spring in Paris", image: paris, alt: "Paris skyline with Eiffel Tower", date: "Apr 12–18", budget: "$1,450" },
     { title: "Tokyo Street Food", image: tokyo, alt: "Tokyo skyline with Tokyo Tower", date: "May 3–10", budget: "$2,200" },
@@ -50,7 +54,7 @@ const Index = () => {
       {/* Page content */}
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <WelcomeHero onPlan={handlePlan} />
+        <WelcomeHero onPlan={handlePlan} onViewTrips={handleViewTrips} />
         <SearchBar />
 
         <section aria-labelledby="recent" className="mt-6">

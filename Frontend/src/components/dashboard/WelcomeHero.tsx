@@ -4,7 +4,7 @@ import hero from "@/assets/hero-travel.jpg";
 import { useCallback } from "react";
 import ProfileIcon from "./ProfileIcon";
 
-const WelcomeHero = ({ onPlan }: { onPlan?: () => void }) => {
+const WelcomeHero = ({ onPlan, onViewTrips }: { onPlan?: () => void; onViewTrips?: () => void }) => {
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -46,6 +46,7 @@ const WelcomeHero = ({ onPlan }: { onPlan?: () => void }) => {
               </div>
               <div className="flex items-center gap-3">
                 <Button variant="default" size="lg" className="px-8 py-4 text-lg font-semibold rounded-full shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl" onClick={onPlan}>Plan New Trip</Button>
+                <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-semibold rounded-full shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl" onClick={onViewTrips}>View My Trips</Button>
                 <Button variant="secondary" size="lg" asChild>
                   <a href="#recommended" aria-label="Explore recommended destinations">Explore Destinations</a>
                 </Button>
